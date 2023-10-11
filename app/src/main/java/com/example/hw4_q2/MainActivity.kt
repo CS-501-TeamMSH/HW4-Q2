@@ -87,3 +87,5 @@ class MainActivity : AppCompatActivity(), SensorEventListener{
     }
 
 }
+
+//need to make a Toast with the coordinates!
