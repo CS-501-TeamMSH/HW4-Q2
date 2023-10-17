@@ -8,6 +8,7 @@ import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener{
 
     private lateinit var sensorManager: SensorManager
     private lateinit var square: TextView
+    private lateinit var sensitivitySeekBar: SeekBar
+    private lateinit var sensitivityLabel: TextView
     private var lastMoveTime: Long = 0
     private var isMovingRight = false
     private var isMovingLeft = false
@@ -30,8 +33,19 @@ class MainActivity : AppCompatActivity(), SensorEventListener{
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         square = findViewById<TextView>(R.id.tv_square)
-
+        sensitivitySeekBar = findViewById<SeekBar>(R.id.sensitivitySeekBar)
+        sensitivityLabel = findViewById<TextView>(R.id.sensitivityLabel)
         setupSensorStuff()
+
+        sensitivitySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                sensitivityLabel.text = "Sensitivity: $progress"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
     }
 
     // setup the sensor/listener
@@ -51,14 +65,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener{
             val zAxis = event.values[2]
 
             // Check for left or right movement
-            if (xAxis > 2.0) {
+            if (xAxis > sensitivitySeekBar.progress) {
                 if (!isMovingRight && (System.currentTimeMillis() - lastMoveTime) > 1000) {
                     isMovingRight = true
                     isMovingLeft = false
                     showToast("Moved right")
                     lastMoveTime = System.currentTimeMillis()
                 }
-            } else if (xAxis < -2.0) {
+            } else if (xAxis < -sensitivitySeekBar.progress) {
                 if (!isMovingLeft && (System.currentTimeMillis() - lastMoveTime) > 1000) {
                     isMovingLeft = true
                     isMovingRight = false
@@ -71,7 +85,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener{
             }
 
             // Check for up or down movement
-            if (yAxis > 12.0) {
+            if (yAxis > (sensitivitySeekBar.progress*6)) {
                 if (!isMovingUp && (System.currentTimeMillis() - lastMoveTime) > 1000) {
                     isMovingUp = true
                     isMovingDown = false
@@ -82,7 +96,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener{
                     showToast("Moved up")
                     lastMoveTime = System.currentTimeMillis()
                 }
-            } else if (yAxis < -12.0) {
+            } else if (yAxis < -(sensitivitySeekBar.progress*6)) {
                 if (!isMovingDown && (System.currentTimeMillis() - lastMoveTime) > 1000) {
                     isMovingUp = false
                     isMovingDown = true
@@ -103,7 +117,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener{
             }
 
             // Check for front or back movement
-            if (zAxis > 2.0) {
+            if (zAxis > sensitivitySeekBar.progress) {
                 if (!isMovingFront && (System.currentTimeMillis() - lastMoveTime) > 1000) {
                     isMovingFront = true
                     isMovingBack = false
@@ -114,7 +128,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener{
                     showToast("Moved front")
                     lastMoveTime = System.currentTimeMillis()
                 }
-            } else if (zAxis < -2.0) {
+            } else if (zAxis < -sensitivitySeekBar.progress) {
                 if (!isMovingBack && (System.currentTimeMillis() - lastMoveTime) > 1000) {
                     isMovingFront = false
                     isMovingBack = true

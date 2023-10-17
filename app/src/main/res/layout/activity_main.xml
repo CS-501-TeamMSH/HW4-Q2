@@ -4,9 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:background="#212121"
     tools:context=".MainActivity">
-
+    <SeekBar
+        android:id="@+id/sensitivitySeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="6"
+        android:progress="2"
+        android:progressTint="@color/red"
+        android:thumbTint="@color/red"/>
+    <TextView
+        android:id="@+id/sensitivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sensitivitySeekBar"
+        android:layout_centerHorizontal="true"
+        android:text="Sensitivity: 2"
+        android:textColor="@color/white"/>
     <TextView
         android:id="@+id/tv_square"
         android:layout_width="200dp"
